@@ -37,8 +37,18 @@ function draw() {
     drawPaddle();
     if (x + dx > game_canvas.width - ballRadius || x + dx < ballRadius)
         dx = -dx;
-    if (y + dy > game_canvas.height - ballRadius || y + dy < ballRadius)
+    if (y + dy < ballRadius)
         dy = -dy;
+    else if (y + dy > game_canvas.height - ballRadius) {
+        if (x > paddleX && x < paddleX + paddleWidth) {
+            dy = - dy;
+        }
+        else {
+            alert("Game Over");
+            document.location.reload();
+            clearInterval(interval);
+        }
+    }
     x += dx;
     y += dy;
     if (leftPressed) {
@@ -53,8 +63,8 @@ function draw() {
     }
 }
 
-document.addEventListener("keydown", keyDownHandler);
-document.addEventListener("keyup", keyUpHandler);
+document.addEventListener("keydown", keyDownHandler, false);
+document.addEventListener("keyup", keyUpHandler, false);
 
 function keyDownHandler(e) {
     if (e.key === "Right" || e.key === "ArrowRight")
@@ -69,4 +79,4 @@ function keyUpHandler(e) {
     else if (e.key === "Left" || e.key === "ArrowLeft")
         leftPressed = false;
 }
-setInterval(draw, 18);
+const interval = setInterval(draw, 18);
