@@ -19,6 +19,8 @@ const brickRowCount = 3, brickColumnCount = 5;
 const brickWidth = 45, brickHeight = 10;
 const brickPadding = 10;
 const brickOffsetTop = 15, brickOffsetLeft = 15;
+let score = 0;
+let colorChange = false;
 
 const bricks = [];
 for (let c = 0; c < brickColumnCount; c++) {
@@ -43,7 +45,6 @@ function keyUpHandler(e) {
     else if (e.key === "Left" || e.key === "ArrowLeft")
         leftPressed = false;
 }
-let colorChange = false;
 function collisionDetection() {
     for (let c = 0; c < brickColumnCount; c++) {
         for (let r = 0; r < brickRowCount; r++) {
@@ -52,11 +53,17 @@ function collisionDetection() {
                 if (x > b.x && x < b.x + brickWidth && y > b.y && y < b.y + brickHeight) {
                     dy = -dy;
                     b.status = 0;
+                    score++;
                     colorChange = true;
                 }
             }
         }
     }
+}
+function drawScore() {
+    context.font = "9px Segoe UI";
+    context.fillStyle = "#40128B";
+    context.fillText(`Score: ${score}`, game_canvas.width - 50, 10);
 }
 
 function drawBall() {
@@ -86,7 +93,7 @@ function drawBricks() {
                 bricks[c][r].y = brickY;
                 context.beginPath();
                 context.rect(brickX, brickY, brickWidth, brickHeight);
-                context.fillStyle = "";
+                context.fillStyle = "#DD58D6";
                 context.fill();
                 context.closePath();
             }
@@ -99,6 +106,7 @@ function draw() {
     drawBricks();
     drawBall();
     drawPaddle();
+    drawScore();
     collisionDetection();
     if (x + dx > game_canvas.width - ballRadius || x + dx < ballRadius)
         dx = -dx;
@@ -125,6 +133,11 @@ function draw() {
         paddleX += 7;
         if (paddleX + paddleWidth > game_canvas.width)
             paddleX = game_canvas.width - paddleWidth;
+    }
+    if (score === (brickColumnCount * brickRowCount)) {
+        alert("YOU WIN, CONGRATULATIONS!");
+        document.location.reload();
+        clearInterval(interval);
     }
 }
 
