@@ -15,6 +15,19 @@ let paddleX = (game_canvas.width - paddleWidth) / 2;
 let leftPressed = false;
 let rightPressed = false;
 
+const brickRowCount = 3, brickColumnCount = 5;
+const brickWidth = 45, brickHeight = 10;
+const brickPadding = 10;
+const brickOffsetTop = 15, brickOffsetLeft = 15;
+
+const bricks = [];
+for (let c = 0; c < brickColumnCount; c++) {
+    bricks[c] = [];
+    for (let r = 0; r < brickRowCount; r++) {
+        bricks[c][r] = { x: 0, y: 0 };
+    }
+}
+
 function drawBall() {
     context.beginPath();
     context.arc(x, y, ballRadius, 0, Math.PI * 2);
@@ -31,8 +44,25 @@ function drawPaddle() {
     context.closePath();
 }
 
+function drawBricks() {
+    for (let c = 0; c < brickColumnCount; c++) {
+        for (let r = 0; r < brickRowCount; r++) {
+            const brickX = c * (brickWidth + brickPadding) + brickOffsetLeft;
+            const brickY = r * (brickHeight + brickPadding) + brickOffsetTop;
+            bricks[c][r].x = brickX;
+            bricks[c][r].y = brickY;
+            context.beginPath();
+            context.rect(brickX, brickY, brickWidth, brickHeight);
+            context.fillStyle = "";
+            context.fill();
+            context.closePath();
+        }
+    }
+}
+
 function draw() {
     context.clearRect(0, 0, game_canvas.width, game_canvas.height);
+    drawBricks();
     drawBall();
     drawPaddle();
     if (x + dx > game_canvas.width - ballRadius || x + dx < ballRadius)
